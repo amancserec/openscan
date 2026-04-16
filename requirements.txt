@@ -1,0 +1,5 @@
+python-nmap>=0.6.4
+requests>=2.28
+defusedxml>=0.7.1
+tabulate>=0.8.10
+python-dateutil>=2.8.2
