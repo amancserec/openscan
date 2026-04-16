@@ -78,11 +78,15 @@ def parse_nmap_xml(xml_data: str) -> List[Dict[str, Any]]:
             protocol = port.get("protocol")
             state_el = port.find("state")
             state = state_el.get("state") if state_el is not None else None
+            try:
+                parsed_port = int(portid) if portid is not None else None
+            except ValueError:
+                parsed_port = None
             service_el = port.find("service")
             service = {
                 "host": ip,
                 "hostname": hostname,
-                "port": int(portid),
+                "port": parsed_port,
                 "protocol": protocol,
                 "state": state,
                 "name": None,
