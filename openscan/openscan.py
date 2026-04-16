@@ -19,8 +19,9 @@ import subprocess
 import json
 import time
 from typing import List, Dict, Any, Optional
+from urllib.parse import urljoin
 import requests
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from tabulate import tabulate
 from dateutil import parser as dateparser
 
@@ -142,7 +143,7 @@ def query_circl(query: str) -> List[Dict[str, Any]]:
     Note: CIRCL endpoint: https://cve.circl.lu/api/search/{query}
     """
     try:
-        url = CIRCL_SEARCH_URL + requests.utils.requote_uri(query)
+        url = urljoin(CIRCL_SEARCH_URL, requests.utils.requote_uri(query))
         r = requests.get(url, timeout=15)
         r.raise_for_status()
         data = r.json()
@@ -153,7 +154,7 @@ def query_circl(query: str) -> List[Dict[str, Any]]:
             summary = item.get("summary")
             refs = item.get("references", [])
             # CIRCL may include cvss scores
-            cvss = item.get("achlow") or item.get("cvss")
+            cvss = item.get("cvss")
             results.append({"id": cve_id, "summary": summary, "cvss": cvss, "refs": refs})
         return results
     except Exception as e:
